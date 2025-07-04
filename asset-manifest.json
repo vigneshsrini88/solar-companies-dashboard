@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/solar-companies-dashboard/static/css/main.346fed2f.css",
+    "main.js": "/solar-companies-dashboard/static/js/main.0a383b56.js",
+    "static/js/453.1bf77f1e.chunk.js": "/solar-companies-dashboard/static/js/453.1bf77f1e.chunk.js",
+    "index.html": "/solar-companies-dashboard/index.html",
+    "main.346fed2f.css.map": "/solar-companies-dashboard/static/css/main.346fed2f.css.map",
+    "main.0a383b56.js.map": "/solar-companies-dashboard/static/js/main.0a383b56.js.map",
+    "453.1bf77f1e.chunk.js.map": "/solar-companies-dashboard/static/js/453.1bf77f1e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.346fed2f.css",
+    "static/js/main.0a383b56.js"
+  ]
+}
