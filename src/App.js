@@ -1,9 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import './App.css';
 
 const SolarCompaniesComparison = () => {
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Live stock prices using Financial Modeling Prep
+  const [livePrices, setLivePrices] = useState({ waaree: null, premier: null });
+  const [loading, setLoading] = useState(false);
+  const FMP_API_KEY = '2PHeFKYDhlqpGf6tbDumzXgndUjxAYsn';
+
+  const fetchPrice = async (symbol) => {
+    const res = await fetch(
+      `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_API_KEY}`
+    );
+    if (!res.ok) {
+      throw new Error('Failed to fetch price');
+    }
+    const data = await res.json();
+    return data && data.length > 0 ? data[0] : null;
+  };
+
+  const loadPrices = async () => {
+    setLoading(true);
+    try {
+      const [waaree, premier] = await Promise.all([
+        fetchPrice('WAAREEENER.NS'),
+        fetchPrice('PREMIERENE.NS'),
+      ]);
+      setLivePrices({ waaree, premier });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPrices();
+  }, []);
 
   // Data extracted from the article
   const companyOverview = [
@@ -234,7 +269,17 @@ const SolarCompaniesComparison = () => {
               <MetricCard title="Founded Year" waareeValue="1990" premierValue="1995" />
               <MetricCard title="Market Cap" waareeValue="85,935" premierValue="47,796" unit=" Cr" type="currency" />
               <MetricCard title="Stock Price" waareeValue="3,014" premierValue="1,069" unit="" type="currency" />
+              <MetricCard title="Current Price (Live)" 
+                waareeValue={livePrices.waaree ? livePrices.waaree.price : (loading ? 'Loading' : 'N/A')} 
+                premierValue={livePrices.premier ? livePrices.premier.price : (loading ? 'Loading' : 'N/A')} 
+                type="currency" 
+              />
               <MetricCard title="Market Share" waareeValue="14.1" premierValue="N/A" unit="%" />
+            </div>
+            <div style={{textAlign:'right', margin:'8px 0'}}>
+              <button onClick={loadPrices} disabled={loading} style={{padding:'6px 12px', border:'none', borderRadius:'4px', backgroundColor:'#1976d2', color:'#fff', cursor:loading?'not-allowed':'pointer'}}>
+                {loading ? 'Refreshing...' : 'Refresh Prices'}
+              </button>
             </div>
 
             <div style={styles.card}>
